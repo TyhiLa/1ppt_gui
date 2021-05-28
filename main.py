@@ -7,12 +7,14 @@ IDE: PyCharm
 Introduction:
 """
 import tkinter as tk
+import requests
+import spider
 
 
 class Main(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.geometry("1024x800")
+        self.geometry("800x600")
         self.title("第一ppt下载")
         self.resizable(width=False, height=False)
         self.e1text = tk.StringVar()
@@ -20,9 +22,11 @@ class Main(tk.Tk):
         self.setwigets()
 
     def setwigets(self):
-        entry1  = tk.Entry(self, textvariable=self.e1text)
+        frame1 = tk.Frame(self, height=200, width=600, bg="white")
+        frame1.pack()
+        entry1 = tk.Entry(frame1, textvariable=self.e1text)
         entry1.pack()
-        tk.Button(self, text="下载", command=self.btn1) .pack()
+        tk.Button(frame1, text="下载", command=self.btn1).pack()
 
     def btn1(self):
         print(self.e1text.get())
