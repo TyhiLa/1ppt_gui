@@ -4,7 +4,7 @@ import zipfile
 from os import path, rename, remove, mkdir, chdir
 from tqdm import tqdm
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'}
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36'}
 url_all = 'http://www.1ppt.com'
 
 if not path.isdir('download'):
@@ -13,7 +13,7 @@ chdir('download')
 
 
 def req_for_xpath(url, xpath_road):
-    req1 = get(url, headers=headers)
+    req1 = get(url, headers=HEADERS)
     req1.encoding = 'gbk'
     req_xpath = Selector(req1.text)
     selector_re = req_xpath.xpath(xpath_road).extract()
