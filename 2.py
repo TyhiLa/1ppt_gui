@@ -37,7 +37,7 @@ def get_choice_link(choose_title):
 def file_download(url):
     file_first_link_list = req_for_xpath(url, '/html/body/div[5]/dl/dd/ul//li/h2/a/@href')
     url_list = []
-    for x in [url_all + i for i in file_first_link_list]:
+    for x in [url_all + i1 for i1 in file_first_link_list]:
         second_link = req_for_xpath(x, '/html/body/div[4]/div[1]/dl/dd/ul[1]/li/a/@href')[0]
         download_url = req_for_xpath(url_all + second_link, '/html/body/dl/dd/ul[2]/li[1]/a/@href')[0]
         url_list.append(download_url)
