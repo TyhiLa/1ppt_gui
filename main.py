@@ -26,7 +26,7 @@ class Main(tk.Tk):
         self.mainframe = tk.Frame(self, height=600, width=600, bg="pink")
         self.mainframe.pack()
 
-        self.showimamge()
+        # self.showimamge()
     def setwigets(self):
         frame1 = tk.Frame(self, height=200, width=600, bg="white")
         frame1.pack()
