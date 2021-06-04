@@ -61,7 +61,7 @@ def main():
         with tqdm(total=len(file_dict1)) as bar:
             bar.set_description(f'第{a}页下载中')
             for (key, value) in file_dict1.items():
-                req_file = get(value, headers=headers).content
+                req_file = get(value, headers=HEADERS).content
                 with open(key + '.zip', 'wb') as f:
                     f.write(req_file)
                 zip_file = zipfile.ZipFile(key + '.zip')
