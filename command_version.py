@@ -26,7 +26,8 @@ all_choose_title = req_for_xpath(url_all, '/html/body/div[5]/div//ul/li[2]/a/@ti
 title = [str(all_choose_title.index(x) + 1) + '、' + x for x in all_choose_title]
 for i in title:
     print(i, end=' ')
-choice = int(input())
+    print('')
+choice = int(input('请选择'))
 
 
 def get_choice_link(choose_title):
