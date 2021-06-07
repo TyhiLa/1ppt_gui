@@ -23,7 +23,7 @@ class Main(tk.Tk):
         self.e1text = tk.StringVar()
         self.e1text.set("输入所选内容")
         self.setwigets()
-        self.mainframe = tk.Frame(self, height=600, width=600, bg="pink")
+        self.mainframe = tk.Frame(self, height=600, width=600)
         self.mainframe.pack()
 
         # self.showimamge()
@@ -33,6 +33,8 @@ class Main(tk.Tk):
         entry1 = tk.Entry(frame1, textvariable=self.e1text)
         entry1.pack()
         tk.Button(frame1, text="下载", command=self.btn1).pack()
+        lb1 = tk.Listbox(self.mainframe)
+        lb1.pack()
 
     def btn1(self):
         choice = self.e1text.get()

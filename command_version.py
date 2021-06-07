@@ -72,7 +72,7 @@ def auto_decode(name):
             x+=1
         else:
             break
-        rename(name,gbkname)
+    rename(name,gbkname)
                                                                         
 choice_link = url_all + get_choice_link(choice)
 web_for_page = req_for_web(choice_link)
