@@ -1,0 +1,4 @@
+requests~=2.25.1
+Pillow~=8.2.0
+parsel~=1.6.0
+tqdm~=4.61.0
