@@ -64,15 +64,15 @@ def get_the_max_page(web):
 
 
 def auto_decode(name):
-	gbkname=str(name).encode('cp437').decode('gbk')
+    gbkname=str(name).encode('cp437').decode('gbk')
     x=1
     while True:
         if path.isfile(gbkname):
             gbkname=str(gbkname).split('.')[0]+f'{x}.'+str(gbkname).split('.')[1]
-   			x+=1
+            x+=1
         else:
             break
-       	rename(name,gbkname)
+        rename(name,gbkname)
                                                                         
 choice_link = url_all + get_choice_link(choice)
 web_for_page = req_for_web(choice_link)
