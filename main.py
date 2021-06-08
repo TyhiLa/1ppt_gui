@@ -7,21 +7,24 @@ IDE: PyCharm
 Introduction:
 """
 import tkinter as tk
-from tkinter import messagebox
 import io
 import requests
 from PIL import Image, ImageTk
-from spider import valueImport
+from spider import valueImport, headers
 
-img_jpg = None
+tk_image = None
+
+
 class Main(tk.Tk):
     def __init__(self):
         super().__init__()
         self.geometry("1024x768")
         self.title("第一ppt下载")
         self.resizable(width=False, height=False)
+        # Static variable
         self.value = valueImport()
         self.imgframe = None
+        self.lis = None
         # self.e1text = tk.StringVar()
         # self.e1text.set("输入所选内容")
         self.setwigets()
@@ -45,7 +48,7 @@ class Main(tk.Tk):
         # entry1 = tk.Entry(frame_TOP, textvariable=self.e1text)
         # entry1.pack()
 
-        tk.Button(frame_img, text="下载", command=self.btn1).pack(side=tk.BOTTOM, fill=tk.X)
+        tk.Button(frame_img, text="下载", command=self.downloadOne).pack(side=tk.BOTTOM, fill=tk.X)
 
         lb1 = tk.Listbox(frame_Middle)
         lb1.pack(side=tk.LEFT, fill=tk.Y)
@@ -56,24 +59,36 @@ class Main(tk.Tk):
         lb2.pack(side=tk.LEFT, fill=tk.Y)
         # lb2.insert('下一页')
         # TODO:下一页控件
-        lb1.bind('<Double-Button-1>', lambda value:[lb2.insert(tk.END, x) for x in self.value[1]])
+        lb1.bind('<Double-Button-1>', lambda value: [lb2.insert(tk.END, x) for x in self.value[1]])
         lb2.bind('<Double-Button-1>', self.showimage)
 
-    def btn1(self):
-        choice = self.e1text.get()
-        if choice == "":
-            messagebox.showwarning(title="输入错误", message="输入为空！")
-        else:
-            print(choice, end="")
-        self.e1text.set('')
+        self.lis = lb2
+    # def btn1(self):
+    #     choice = self.e1text.get()
+    #     if choice == "":
+    #         messagebox.showwarning(title="输入错误", message="输入为空！")
+    #     else:
+    #         print(choice, end="")
+    #     self.e1text.set('')
 
-    def showimage(self):
-        img = Image.open("a.jpg")
-        global img_jpg
-        img_jpg = ImageTk.PhotoImage(img)
-        tk.Label(self.imgframe, image=img_jpg).pack()
+    def showimage(self, event):
+        global tk_image
+        index = self.lis.curselection()
+        img = self.lis.get(index)
+        print(img, index)
+        url = 'https://desk-fd.zol-img.com.cn/t_s960x600c5/g5/M00/00/07/ChMkJl3qNKaIDNA2AARqqK0FxbEAAvnJAJbLQMABGrA592.jpg'
+        img_bytes = requests.get(url, headers=headers).content
+        data_stream = io.BytesIO(img_bytes)
+        pil_image = Image.open(data_stream)
+        w, h = pil_image.size
+        fname = url.split('/')[-1]
+        sf = f"{fname} ({w}x{h})"
+        tk_image = ImageTk.PhotoImage(pil_image.resize((600, 400), Image.ANTIALIAS))
+        tk.Label(self.imgframe, image=tk_image).pack(padx=5, pady=5)
 
     def downloadOne(self):
         pass
+
+
 if __name__ == '__main__':
     Main().mainloop()

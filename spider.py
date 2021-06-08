@@ -86,6 +86,7 @@ def extract(choice, all_choose_link):
 
 # return essential value for display
 # TODO:Need every artical titles and links
+
 def valueImport():
     req_site = req_for_web(url_all)
     all_choose_link = xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@href')
