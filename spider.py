@@ -60,20 +60,10 @@ def auto_decode(name):
             x += 1
         else:
             break
-        rename(name, gbkname)
+    rename(name, gbkname)
 
-
-def main():
-    choice = int(input('请选择'))
-    req_site = req_for_web(url_all)
-    all_choose_link = xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@href')
-    all_choose_title = xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@title')
-    all_choose_link.append('/moban')
-    all_choose_title.append('全部')
-    title = [str(all_choose_title.index(x) + 1) + '、' + x for x in all_choose_title]
-    for i in title:
-        print(i, end=' ')
-    print('')
+# Get $choice from ListBox which binded <Double click>
+def extract(choice, all_choose_link):
     choice_link = url_all + get_choice_link(choice, all_choose_link)
     web_for_page = req_for_web(choice_link)
     for a in range(1, int(get_the_max_page(web_for_page))):
@@ -94,5 +84,16 @@ def main():
                 remove('log' + '.zip')
                 bar.update(1)
 
+# return essential value for display
+# TODO:Need every artical titles and links
+def valueImport():
+    req_site = req_for_web(url_all)
+    all_choose_link = xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@href')
+    all_choose_title = xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@title')
+    all_choose_link.append('/moban')
+    all_choose_title.append('全部')
+    return all_choose_link, all_choose_title
+
+
 if __name__ == '__main__':
-    main()
+    print(valueImport())
