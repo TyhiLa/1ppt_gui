@@ -1,7 +1,8 @@
+from os import path, rename, remove, mkdir, chdir
+import re
 from parsel import Selector
 from requests import get
 import zipfile
-from os import path, rename, remove, mkdir, chdir
 from tqdm import tqdm
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -86,15 +87,26 @@ def extract(choice, all_choose_link):
 
 # return essential value for display
 # TODO:Need every artical titles and links
+def getTitleLink(url, index):
+    html = xpath(req_for_web(url), '/html/body/div[5]/dl/dd/ul/li')
+    # print(html)
+    # TODO: iter for two many times, need Improving
+    print(index)
+    print(url)
+    title = [re.findall('target="_blank">(.*?)</a></h2>', x)[0] for x in html]
+    img = [re.findall('<img src="(.*?)"', x)[0] for x in html]
+    print(title)
+    print(img)
+    return title, img[index]
+
 
 def valueImport():
     req_site = req_for_web(url_all)
-    all_choose_link = xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@href')
+    all_choose_link = [url_all + x for x in xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@href')]
     all_choose_title = xpath(req_site, '/html/body/div[5]/div//ul/li[2]/a/@title')
-    all_choose_link.append('/moban')
-    all_choose_title.append('全部')
     return all_choose_link, all_choose_title
 
 
 if __name__ == '__main__':
-    print(valueImport())
+    # print(valueImport())
+    getTitleLink('http://www.1ppt.com/moban/jianjie/', 1)
