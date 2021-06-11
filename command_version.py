@@ -63,25 +63,17 @@ def get_the_max_page(web):
     return max_link.split('_')[-1][:-5]
 
 
-def auto_rename(old, new):
-    x = 0
-    while 1:
-        if x == 0:
-            try:
-                rename(old, new)
-                break
-            except FileExistsError:
-                x += 1
-                pass
+def auto_decode(name):
+    gbkname=str(name).encode('cp437').decode('gbk')
+    x=1
+    while True:
+        if path.isfile(gbkname):
+            gbkname=str(gbkname).split('.')[0]+f'{x}.'+str(gbkname).split('.')[1]
+            x+=1
         else:
-            try:
-                rename(old, str(new).split('.')[0] + f'({x}).' + str(new).split('.')[1])
-                break
-            except FileExistsError:
-                x += 1
-                pass
-
-
+            break
+    rename(name,gbkname)
+                                                                        
 choice_link = url_all + get_choice_link(choice)
 web_for_page = req_for_web(choice_link)
 for a in range(1, int(get_the_max_page(web_for_page))):
@@ -95,10 +87,9 @@ for a in range(1, int(get_the_max_page(web_for_page))):
                 f.write(req_file)
             zip_file = zipfile.ZipFile('log' + '.zip')
             for names in zip_file.namelist():
-                gbk_names = str(names).encode('cp437').decode('GBK')
                 if '.ppt' in names:
                     zip_file.extract(names)
-                    auto_rename(str(names), gbk_names)
+                    auto_decode(names)
             zip_file.close()
             remove('log' + '.zip')
             bar.update(1)
