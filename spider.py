@@ -90,14 +90,14 @@ def extract(choice, all_choose_link):
 def getTitleLink(url, index):
     html = xpath(req_for_web(url), '/html/body/div[5]/dl/dd/ul/li')
     # print(html)
-    # TODO: iter for two many times, need Improving
-    print(index)
-    print(url)
-    title = [re.findall('target="_blank">(.*?)</a></h2>', x)[0] for x in html]
-    img = [re.findall('<img src="(.*?)"', x)[0] for x in html]
-    print(title)
-    print(img)
-    return title, img[index]
+    # TODO: iter for too many times, need Improving
+    # title = [re.findall('target="_blank">(.*?)</a></h2>', x)[0] for x in html]
+    # img = [re.findall('<img src="(.*?)"', x)[0] for x in html]
+    temp = [re.findall('<img src="(.*?)" alt="(.*?)">', x)[0] for x in html]
+    title = [x[1] for x in temp]
+    img_url = [x[0] for x in temp]
+    print(img_url)
+    return title, img_url[index]
 
 
 def valueImport():
@@ -109,4 +109,4 @@ def valueImport():
 
 if __name__ == '__main__':
     # print(valueImport())
-    getTitleLink('http://www.1ppt.com/moban/jianjie/', 1)
+    getTitleLink('http://www.1ppt.com/moban/tags/121', 1)
