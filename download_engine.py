@@ -49,5 +49,5 @@ def launch(first_url):
             auto_decode(names)
     zip_file.close()
 
-
-launch('http://www.1ppt.com/article/79809.html')
+if __name__ == "__main__":
+    launch('http://www.1ppt.com/article/79809.html')

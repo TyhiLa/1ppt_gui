@@ -94,10 +94,12 @@ def getTitleLink(url, index):
     # title = [re.findall('target="_blank">(.*?)</a></h2>', x)[0] for x in html]
     # img = [re.findall('<img src="(.*?)"', x)[0] for x in html]
     temp = [re.findall('<img src="(.*?)" alt="(.*?)">', x)[0] for x in html]
+    dow_url = [url_all + re.findall('<a href="(.*?)"', x)[0] for x in html]
+    print(dow_url)
     title = [x[1] for x in temp]
     img_url = [x[0] for x in temp]
     print(img_url)
-    return title, img_url[index]
+    return title, img_url[index], dow_url
 
 
 def valueImport():
@@ -109,4 +111,4 @@ def valueImport():
 
 if __name__ == '__main__':
     # print(valueImport())
-    getTitleLink('http://www.1ppt.com/moban/tags/121', 1)
+    getTitleLink('http://www.1ppt.com/moban/jianjie/', 1)

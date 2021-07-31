@@ -11,6 +11,7 @@ import io
 import requests
 from PIL import Image, ImageTk
 from spider import valueImport, headers, getTitleLink
+import download_engine
 
 tk_image = None
 
@@ -21,8 +22,9 @@ class Main(tk.Tk):
         self.geometry("1024x768")
         self.title("第一ppt下载")
         self.resizable(width=False, height=False)
-        # Static variable
         self.value = valueImport()
+        print(self.value)
+        self.data_page = None
         self.titlelink = None
         self.imgframe = None
         self.lb2 = None
@@ -30,28 +32,14 @@ class Main(tk.Tk):
         self.index1 = None
         self.index2 = None
         self.lbv = tk.StringVar()
-        # self.e1text = tk.StringVar()
-        # self.e1text.set("输入所选内容")
         self.setwigets()
 
-        # self.showimamge()
     def setwigets(self):
-        # frame_TOP = tk.Frame(self)
-        # frame_TOP.pack(side=tk.TOP, fill=tk.X)
         frame_Middle = tk.Frame(self, bg='red')
         frame_Middle.pack(side=tk.TOP, expand=tk.YES, fill=tk.BOTH)
         frame_img = tk.Frame(frame_Middle, bg='pink')
         frame_img.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.BOTH)
         self.imgframe = frame_img
-        # frame_End = tk.Frame(self)
-        # frame_End.pack(side=tk.TOP, expand=tk.NO, fill=tk.BOTH)
-        # frame_End_left = tk.Frame(frame_End)
-        # frame_End_left.pack(side=tk.LEFT, expand=tk.YES, fill=tk.BOTH)
-        # frame_End_right = tk.Frame(frame_End)
-        # frame_End_right.pack(side=tk.LEFT, fill=tk.BOTH)
-
-        # entry1 = tk.Entry(frame_TOP, textvariable=self.e1text)
-        # entry1.pack()
 
         tk.Button(frame_img, text="下载", command=self.downloadOne).pack(side=tk.BOTTOM, fill=tk.X)
 
@@ -62,9 +50,7 @@ class Main(tk.Tk):
 
         lb2 = tk.Listbox(frame_Middle, listvariable=self.lbv)
         lb2.pack(side=tk.LEFT, fill=tk.Y)
-        # lb2.insert('下一页')
         # TODO:下一页控件
-        # lb1.bind('<Double-Button-1>', lambda value: [lb2.insert(tk.END, x) for x in self.titlelink[0]])
         lb1.bind('<Button-1>', self.lb2insrt)
         lb2.bind('<Button-1>', self.showimage)
 
@@ -72,41 +58,30 @@ class Main(tk.Tk):
         self.lb2 = lb2
         self.img_lb = tk.Label(self.imgframe, text="图片显示区...")
         self.img_lb.pack(padx=5, pady=5)
-    # def btn1(self):
-    #     choice = self.e1text.get()
-    #     if choice == "":
-    #         messagebox.showwarning(title="输入错误", message="输入为空！")
-    #     else:
-    #         print(choice, end="")
-    #     self.e1text.set('')
 
     def lb2insrt(self, _):
         self.index1 = self.lb1.curselection()
-        title = getTitleLink(self.value[0][self.index1[0]], 0)
+        self.data = getTitleLink(self.value[0][self.index1[0]], 0)
         if self.lbv.get() == "":
-            for i in title[0]:
+            for i in self.data[0]:
                 self.lb2.insert(tk.END, i)
         else:
             self.lb2.delete(0, tk.END)
-            for i in title[0]:
+            for i in self.data[0]:
                 self.lb2.insert(tk.END, i)
 
     def showimage(self, _):
         global tk_image
         self.index2 = self.lb2.curselection()
-        # img = self.lis.get(index[0])
         data = getTitleLink(self.value[0][self.index1[0]], self.index2[0])
         img_bytes = requests.get(data[1], headers=headers).content
         data_stream = io.BytesIO(img_bytes)
         pil_image = Image.open(data_stream)
-        # w, h = pil_image.size
-        # fname = url.split('/')[-1]
-        # sf = f"{fname} ({w}x{h})"
         tk_image = ImageTk.PhotoImage(pil_image.resize((600, 400), Image.ANTIALIAS))
         self.img_lb.configure(image=tk_image)
 
     def downloadOne(self):
-        pass
+        download_engine.launch(self.data[2][self.index2[0]])
 
 
 if __name__ == '__main__':
