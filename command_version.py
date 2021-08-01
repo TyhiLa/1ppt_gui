@@ -35,7 +35,7 @@ title = [str(all_choose_title.index(x) + 1) + '、' + x for x in all_choose_titl
 for i in title:
     print(i, end=' ')
 print('')
-choice = int(input('请选择'))
+choice = int(input('请选择:'))
 
 
 def get_choice_link(choose_title):
