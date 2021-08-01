@@ -10,7 +10,7 @@ import tkinter as tk
 import io
 import requests
 from PIL import Image, ImageTk
-from spider import valueImport, headers, getTitleLink
+#from spider import valueImport, headers, getTitleLink
 import download_engine
 
 tk_image = None
@@ -22,7 +22,7 @@ class Main(tk.Tk):
         self.geometry("1024x768")
         self.title("第一ppt下载")
         self.resizable(width=False, height=False)
-        self.value = valueImport()
+        self.value = download_engine.valueImport()
         print(self.value)
         self.data_page = None
         self.titlelink = None
@@ -61,7 +61,7 @@ class Main(tk.Tk):
 
     def lb2insrt(self, _):
         self.index1 = self.lb1.curselection()
-        self.data = getTitleLink(self.value[0][self.index1[0]], 0)
+        self.data = download_engine.getTitleLink(self.value[0][self.index1[0]], 0)
         if self.lbv.get() == "":
             for i in self.data[0]:
                 self.lb2.insert(tk.END, i)
@@ -73,8 +73,8 @@ class Main(tk.Tk):
     def showimage(self, _):
         global tk_image
         self.index2 = self.lb2.curselection()
-        data = getTitleLink(self.value[0][self.index1[0]], self.index2[0])
-        img_bytes = requests.get(data[1], headers=headers).content
+        data = download_engine.getTitleLink(self.value[0][self.index1[0]], self.index2[0])
+        img_bytes = requests.get(data[1], headers=download_engine.headers).content
         data_stream = io.BytesIO(img_bytes)
         pil_image = Image.open(data_stream)
         tk_image = ImageTk.PhotoImage(pil_image.resize((600, 400), Image.ANTIALIAS))
