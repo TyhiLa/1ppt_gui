@@ -32,21 +32,23 @@ def re_for_web(url, pattern):
     result = re1.findall(req1.text)
     return result
 
+
 def req_for_web(url):
     req1 = get(url, headers=headers)
     req1.encoding = 'gbk'
     return req1
+
 
 def get_download_link(url):
     second_link = re_for_web(url, pattern_2)
     download_link = re_for_web(url_all + second_link[0], pattern_d)
     return download_link[0]
 
+
 def xpath(req_in, xpath_road):
     req_xpath = Selector(req_in.text)
     selector_re = req_xpath.xpath(xpath_road).extract()
     return selector_re
-
 
 
 def getTitleLink(url, index):
@@ -79,6 +81,7 @@ def launch(first_url):
             zip_file.extract(names)
             auto_decode(names)
     zip_file.close()
+
 
 if __name__ == "__main__":
     launch('http://www.1ppt.com/article/79809.html')

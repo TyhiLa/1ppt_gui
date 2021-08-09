@@ -4,6 +4,9 @@ from os import path, rename, remove, mkdir, chdir
 from tqdm import tqdm
 import re
 import io
+import asyncio
+import aiohttp
+import time
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/90.0.4430.212 Safari/537.36'}
@@ -43,15 +46,29 @@ def get_choice_link(choose_title):
     return choice_link1
 
 
+async def aio_get(url, pattern):
+    async with aiohttp.ClientSession() as r:
+        async with r.get(url, headers=headers) as rep:
+            i1 = await rep.text(encoding='gbk')
+            re1 = re.compile(pattern)
+            re2 = re1.findall(i1)
+            return re2
+
+
+def loop_aio(url_list, pattern):
+    task = [asyncio.ensure_future(aio_get(url1, pattern)) for url1 in url_list]
+    tasks = asyncio.gather(*task)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(tasks)
+    return tasks.result()
+
+
 def file_download(url):
     web = req_for_web(url)
     file_first_link_list = get_re(web, 'a href=\"(.*?)\" .*</h2')
-    url_list = []
-    for x in [url_all + i1 for i1 in file_first_link_list]:
-        second_link = get_re(req_for_web(x), 'a href=\'(.*?)\' target=')[0]
-        download_url = get_re(req_for_web(url_all + second_link), 'a href=\"(.*?)\" target=')[0]
-        url_list.append(download_url)
-    return url_list
+    link_2 = loop_aio([url_all + i1 for i1 in file_first_link_list], 'a href=\'(.*?)\' target=')
+    link_d = loop_aio([url_all + l1[0] for l1 in link_2], 'a href=\"(.*?)\" target=')
+    return link_d
 
 
 def format_link(web, page):
@@ -84,7 +101,7 @@ for a in range(1, int(get_the_max_page(web_for_page))):
     with tqdm(total=len(file_list)) as bar:
         bar.set_description(f'第{a}页下载中')
         for link in file_list:
-            req_file = get(link, headers=headers).content
+            req_file = get(link[0], headers=headers).content
             data = io.BytesIO()
             data.write(req_file)
             zip_file = zipfile.ZipFile(data)
