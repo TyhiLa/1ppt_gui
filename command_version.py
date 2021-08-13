@@ -1,6 +1,6 @@
 from requests import get
 import zipfile
-from os import path, rename, remove, mkdir, chdir
+from os import path, rename, mkdir, chdir
 from tqdm import tqdm
 import re
 import io
@@ -77,7 +77,10 @@ def format_link(web, page):
 
 def get_the_max_page(web):
     max_link = get_re(web, 'href=\'(.*?)\'>末页')[0]
-    return max_link.split('_')[-1][:-5]
+    if '_' in max_link:
+        return max_link.split('_')[-1][:-5]
+    elif '/' in max_link:
+        return max_link.split('/')[-1][:-5]
 
 
 def auto_decode(name):
@@ -85,7 +88,7 @@ def auto_decode(name):
     x = 1
     while True:
         if path.isfile(gbk_name):
-            gbk_name = str(gbk_name).split('.')[0] + f'{x}.' + str(gbk_name).split('.')[1]
+            gbk_name = str(gbk_name).split('.')[0] + f'({x}).' + str(gbk_name).split('.')[1]
             x += 1
         else:
             break
@@ -97,8 +100,8 @@ web_for_page = req_for_web(choice_link)
 for a in range(1, int(get_the_max_page(web_for_page))):
     add_page = choice_link + format_link(web_for_page, a)
     file_list = file_download(add_page)
-    with tqdm(total=len(file_list)) as bar:
-        bar.set_description(f'第{a}页下载中')
+    with tqdm(total=len(file_list),
+              bar_format='第%d页下载中:{percentage:3.0f}%%|{bar}|{n}/{total}[{rate_fmt}{postfix}]' % a) as bar:
         for link in file_list:
             req_file = get(link[0], headers=headers).content
             data = io.BytesIO()
