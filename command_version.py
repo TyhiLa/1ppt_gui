@@ -128,7 +128,7 @@ def main(choice1):
                 for names in zip_file.namelist():
                     if '.ppt' in names:
                         zip_file.extract(names)
-                        name_list.append(auto_decode(names))
+                        auto_decode(names)
                 zip_file.close()
                 bar.update(1)
 
