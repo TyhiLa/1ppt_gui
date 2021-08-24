@@ -6,6 +6,7 @@ import re
 import io
 import asyncio
 import aiohttp
+from pptx import Presentation
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/90.0.4430.212 Safari/537.36'}
@@ -38,7 +39,9 @@ for i in title:
     print(i, end=' ')
 print('')
 choice = int(input('请选择:'))
-
+if not path.isdir(all_choose_title[choice - 1]):
+    mkdir(all_choose_title[choice - 1])
+chdir(all_choose_title[choice - 1])
 
 def get_choice_link(choose_title):
     choice_link1 = all_choose_link[choose_title - 1]
@@ -86,30 +89,46 @@ def get_the_max_page(web):
 def auto_decode(name):
     gbk_name = str(name).encode('cp437').decode('gbk')
     x = 1
-    while True:
-        if path.isfile(gbk_name):
-            gbk_name = str(gbk_name).split('.')[0] + f'({x}).' + str(gbk_name).split('.')[1]
-            x += 1
-        else:
-            break
+    if '('not in gbk_name:
+        while True:
+            if path.isfile(gbk_name):
+                gbk_name = str(gbk_name).split('.')[0] + f'({x}).' + str(gbk_name).split('.')[1]
+                x += 1
+            else:
+                break
+    else:
+        while True:
+            if path.isfile(gbk_name):
+                gbk_name = str(gbk_name).split('(')[0] + f'({x}).' + str(gbk_name).split(')')[1]
+                x += 1
+            else:
+                break
     rename(name, gbk_name)
+    prs = Presentation(gbk_name)
+    slides = prs.slides
+    rId = slides._sldIdLst[-1].rId
+    prs.part.drop_rel(rId)
+    del prs.slides._sldIdLst[-1]
 
 
-choice_link = url_all + get_choice_link(choice)
-web_for_page = req_for_web(choice_link)
-for a in range(1, int(get_the_max_page(web_for_page))):
-    add_page = choice_link + format_link(web_for_page, a)
-    file_list = file_download(add_page)
-    with tqdm(total=len(file_list),
-              bar_format='第%d页下载中:{percentage:3.0f}%%|{bar}|{n}/{total}[{rate_fmt}{postfix}]' % a) as bar:
-        for link in file_list:
-            req_file = get(link[0], headers=headers).content
-            data = io.BytesIO()
-            data.write(req_file)
-            zip_file = zipfile.ZipFile(data)
-            for names in zip_file.namelist():
-                if '.ppt' in names:
-                    zip_file.extract(names)
-                    auto_decode(names)
-            zip_file.close()
-            bar.update(1)
+def main(choice1):
+    choice_link = url_all + get_choice_link(choice1)
+    web_for_page = req_for_web(choice_link)
+    for a in range(1, int(get_the_max_page(web_for_page))):
+        add_page = choice_link + format_link(web_for_page, a)
+        file_list = file_download(add_page)
+        with tqdm(total=len(file_list),
+                  bar_format='第%d页下载中:{percentage:3.0f}%%|{bar}|{n}/{total}[{rate_fmt}{postfix}]' % a) as bar:
+            name_list = []
+            for link in file_list:
+                req_file = get(link[0], headers=headers).content
+                data = io.BytesIO()
+                data.write(req_file)
+                zip_file = zipfile.ZipFile(data)
+                for names in zip_file.namelist():
+                    if '.ppt' in names:
+                        zip_file.extract(names)
+                        name_list.append(auto_decode(names))
+                zip_file.close()
+                bar.update(1)
+
