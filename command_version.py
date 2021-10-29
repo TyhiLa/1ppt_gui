@@ -43,6 +43,7 @@ if not path.isdir(all_choose_title[choice - 1]):
     mkdir(all_choose_title[choice - 1])
 chdir(all_choose_title[choice - 1])
 
+
 def get_choice_link(choose_title):
     choice_link1 = all_choose_link[choose_title - 1]
     return choice_link1
@@ -131,4 +132,3 @@ def main(choice1):
                         auto_decode(names)
                 zip_file.close()
                 bar.update(1)
-
