@@ -90,7 +90,7 @@ def get_the_max_page(web):
 def auto_decode(name):
     gbk_name = str(name).encode('cp437').decode('gbk')
     x = 1
-    if '('not in gbk_name:
+    if '(' not in gbk_name:
         while True:
             if path.isfile(gbk_name):
                 gbk_name = str(gbk_name).split('.')[0] + f'({x}).' + str(gbk_name).split('.')[1]
@@ -120,7 +120,6 @@ def main(choice1):
         file_list = file_download(add_page)
         with tqdm(total=len(file_list),
                   bar_format='第%d页下载中:{percentage:3.0f}%%|{bar}|{n}/{total}[{rate_fmt}{postfix}]' % a) as bar:
-            name_list = []
             for link in file_list:
                 req_file = get(link[0], headers=headers).content
                 data = io.BytesIO()
@@ -132,3 +131,7 @@ def main(choice1):
                         auto_decode(names)
                 zip_file.close()
                 bar.update(1)
+
+
+if __name__ == "__main__":
+    main(choice)
