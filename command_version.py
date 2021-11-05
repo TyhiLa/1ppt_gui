@@ -6,7 +6,6 @@ import re
 import io
 import asyncio
 import aiohttp
-from pptx import Presentation
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                          'Chrome/90.0.4430.212 Safari/537.36'}
@@ -105,11 +104,6 @@ def auto_decode(name):
             else:
                 break
     rename(name, gbk_name)
-    prs = Presentation(gbk_name)
-    slides = prs.slides
-    rId = slides._sldIdLst[-1].rId
-    prs.part.drop_rel(rId)
-    del prs.slides._sldIdLst[-1]
 
 
 def main(choice1):
