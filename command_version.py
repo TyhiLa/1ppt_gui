@@ -1,3 +1,4 @@
+import time
 from requests import get
 import zipfile
 from os import path, rename, mkdir, chdir
@@ -9,8 +10,9 @@ import aiohttp
 import pptx
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                         'Chrome/90.0.4430.212 Safari/537.36'}
+                         'Chrome/95.0.4638.54 Safari/537.36'}
 url_all = 'http://www.1ppt.com'
+cookie = ''
 
 if not path.isdir('download'):  # 建立下载文件夹
     mkdir('download')
@@ -18,7 +20,7 @@ chdir('download')
 
 
 def req_for_web(url):  # 该函数负责获取页面
-    req1 = get(url, headers=headers)
+    req1 = get(url, headers=headers, cookies=cookie)
     req1.encoding = 'gbk'
     return req1.text
 
@@ -69,7 +71,14 @@ def loop_aio(url_list, pattern):  # 异步实现
 def file_download(url):  # 获取真实链接
     web = req_for_web(url)
     file_first_link_list = get_re(web, 'a href=\"(.*?)\" .*</h2')
+    # link_d = []
+    # for x in [url_all + i1 for i1 in file_first_link_list]:
+    #     second_link = get_re(req_for_web(x), 'a href=\'(.*?)\' target=')[0]
+    #     time.sleep(5)
+    #     download_url = get_re(req_for_web(url_all + second_link), 'a href=\"(.*?)\" target=')[0]
+    #     link_d.append(download_url)
     link_2 = loop_aio([url_all + i1 for i1 in file_first_link_list], 'a href=\'(.*?)\' target=')
+    time.sleep(10)
     link_d = loop_aio([url_all + l1[0] for l1 in link_2], 'a href=\"(.*?)\" target=')
     return link_d
 
